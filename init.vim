@@ -37,3 +37,8 @@ set rnu
 set number
 set splitbelow
 
+
+set tabstop=4
+set softtabstop=0 noexpandtab
+set shiftwidth=4
+
