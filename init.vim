@@ -10,6 +10,7 @@ Plug 'w0rp/ale'
 Plug 'itchyny/lightline.vim'
 Plug 'tpope/vim-surround'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'vhdirk/vim-cmake'
 
 call plug#end()
 
@@ -36,4 +37,3 @@ set rnu
 set number
 set splitbelow
 
-let g:python3_host_prog = "C:\\Users\\Junk\\AppData\\Local\\Programs\\Python\\Python38\\python.exe"
