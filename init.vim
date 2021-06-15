@@ -29,6 +29,11 @@ Plug 'christoomey/vim-conflicted'
 
 call plug#end()
 
+"Dependancies
+"ctags
+"powerline_fonts
+"python3
+
 syntax on
 set t_Co=256
 
