@@ -1,0 +1,13 @@
+{
+	"languageserver": {
+		"ccls": {
+			"command": "ccls",
+			"filetypes": ["cpp", "c", "h", "hpp", "cxx", "objc", "objcpp"],
+			"initializationOptions":{
+				"highlight": { "lsRanges": true }
+			},
+      		"rootPatterns": [".ccls", "compile_commands.json", ".vim/", ".git/", ".hg/"]
+		},
+	},
+	"explorer.width": 30
+}
