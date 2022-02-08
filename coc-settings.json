@@ -7,7 +7,26 @@
 				"highlight": { "lsRanges": true }
 			},
       		"rootPatterns": [".ccls", "compile_commands.json", ".vim/", ".git/", ".hg/"]
-		},
+		}
 	},
-	"explorer.width": 30
+	"explorer.icon.enableNerdfont": true,
+	"explorer.icon.source": "vim-devicons",
+	"explorer.width": 30,
+	"explorer.previewAction.onHover": "labeling",
+	"explorer.sources": 
+	[
+		{
+    		"name": "bookmark",
+    		"expand": true
+  		},
+  		{
+    		"name": "buffer",
+    		"expand": false,
+			"icon": "+"
+  		},
+  		{
+    		"name": "file",
+    		"expand": true
+  		}
+		]
 }

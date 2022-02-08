@@ -21,6 +21,9 @@ Plug 'autozimu/LanguageClient-neovim', {
 	\ }
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'tpope/vim-repeat'
+Plug 'alvan/vim-closetag'
+Plug 'ryanoasis/vim-devicons'
+
 
 call plug#end()
 
@@ -111,3 +114,4 @@ augroup nasm_ft
 	autocmd BufRead,BufNewFile *.asm set filetype=nasm
 	autocmd BufNewFile,BufRead *.asm   set syntax=nasm
 augroup END
+
