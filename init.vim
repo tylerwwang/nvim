@@ -23,13 +23,12 @@ Plug 'ntpeters/vim-better-whitespace'
 Plug 'tpope/vim-repeat'
 Plug 'alvan/vim-closetag'
 Plug 'ryanoasis/vim-devicons'
-
+Plug 'pseewald/vim-anyfold'
 
 call plug#end()
 
 "Dependancies
 "ctags
-"powerline_fonts
 "node
 
 syntax on
@@ -74,15 +73,21 @@ let g:NERDTreeDirArrowCollapsible = ' ▾'
 
 map ; <Cmd>CocCommand explorer<CR>
 map <CR> :Files<CR>
-map _ :q<CR>
+map <C-_> :q<CR>
 map <C-s> :mkview<CR>:w<CR>
 map T :new<CR>:term<CR>
 map <tab> :loadview<CR>
-vmap <space> zf
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 nmap <silent> <C-l> :noh <CR>
 nmap <silent> ' :TagbarToggle <CR>
-nmap + <Plug>(lcn-menu)
+nmap \ <Plug>(lcn-menu)
+nmap - zc
+nmap = zo
+nmap + zR
+nmap _ zM
+nmap ~ :AnyFoldActivate <CR>
+
+set foldmethod=syntax
 
 augroup numbertoggle
 	autocmd!
