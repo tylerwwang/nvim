@@ -13,7 +13,6 @@ Plug 'jackguo380/vim-lsp-cxx-highlight'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-scripts/delimitMate.vim'
 Plug 'majutsushi/tagbar'
-Plug 'vim-scripts/vim-gitgutter'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'autozimu/LanguageClient-neovim', {
 	\ 'branch': 'next',
@@ -23,7 +22,6 @@ Plug 'ntpeters/vim-better-whitespace'
 Plug 'tpope/vim-repeat'
 Plug 'alvan/vim-closetag'
 Plug 'ryanoasis/vim-devicons'
-Plug 'pseewald/vim-anyfold'
 
 call plug#end()
 
@@ -85,7 +83,6 @@ nmap - zc
 nmap = zo
 nmap + zR
 nmap _ zM
-nmap ~ :AnyFoldActivate <CR>
 
 set foldmethod=syntax
 
@@ -120,3 +117,4 @@ augroup nasm_ft
 	autocmd BufNewFile,BufRead *.asm   set syntax=nasm
 augroup END
 
+let g:coc_global_extensions = ['coc-git', 'coc-json', 'coc-python', 'coc-explorer', 'coc-tsserver', 'coc-highlight']

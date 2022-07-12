@@ -9,12 +9,13 @@
       		"rootPatterns": [".ccls", "compile_commands.json", ".vim/", ".git/", ".hg/"]
 		}
 	},
+	"git.removedSign.text": "—",
+
 	"explorer.icon.enableNerdfont": true,
 	"explorer.icon.source": "vim-devicons",
 	"explorer.width": 30,
 	"explorer.previewAction.onHover": "labeling",
-	"explorer.sources": 
-	[
+	"explorer.sources": [
 		{
     		"name": "bookmark",
     		"expand": true
@@ -28,5 +29,5 @@
     		"name": "file",
     		"expand": true
   		}
-		]
+	]
 }
