@@ -14,10 +14,6 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-scripts/delimitMate.vim'
 Plug 'majutsushi/tagbar'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'autozimu/LanguageClient-neovim', {
-	\ 'branch': 'next',
-	\ 'do': 'bash install.sh',
-	\ }
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'tpope/vim-repeat'
 Plug 'alvan/vim-closetag'
@@ -28,6 +24,7 @@ call plug#end()
 "Dependancies
 "ctags
 "node
+"solargraph
 
 syntax on
 set t_Co=256
@@ -84,7 +81,7 @@ nmap = zo
 nmap + zR
 nmap _ zM
 
-set foldmethod=syntax
+set foldmethod=indent
 
 augroup numbertoggle
 	autocmd!
@@ -100,15 +97,6 @@ set tabstop=4
 set softtabstop=0 noexpandtab
 set shiftwidth=4
 
-let g:LanguageClient_serverCommands = {
-	\ 'c': ['ccls'],
-	\ 'cpp': ['ccls'],
-	\ 'objc': ['ccls'],
-	\ 'python': ['pyls'],
-	\ }
-
-let g:LanguageClient_useVirtualText = "CodeLens"
-
 let g:lsp_cxx_hl_use_text_props = 1
 
 augroup nasm_ft
@@ -117,4 +105,4 @@ augroup nasm_ft
 	autocmd BufNewFile,BufRead *.asm   set syntax=nasm
 augroup END
 
-let g:coc_global_extensions = ['coc-git', 'coc-json', 'coc-python', 'coc-explorer', 'coc-tsserver', 'coc-highlight']
+let g:coc_global_extensions = ['coc-git', 'coc-json', 'coc-python', 'coc-explorer', 'coc-tsserver', 'coc-highlight', 'coc-solargraph']
