@@ -14,20 +14,19 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-scripts/delimitMate.vim'
 Plug 'majutsushi/tagbar'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'autozimu/LanguageClient-neovim', {
-	\ 'branch': 'next',
-	\ 'do': 'bash install.sh',
-	\ }
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'tpope/vim-repeat'
 Plug 'alvan/vim-closetag'
 Plug 'ryanoasis/vim-devicons'
+Plug 'cohama/agit.vim'
+Plug 'jreybert/vimagit'
 
 call plug#end()
 
 "Dependancies
 "ctags
 "node
+"solargraph
 
 syntax on
 set t_Co=256
@@ -43,10 +42,11 @@ endif
 
 let g:airline_symbols.colnr = ''
 let g:airline_section_y = ''
-
 let g:airline#extensions#tagbar#enabled = 1
-let g:airline#extensions#branch#enabled = 1
-let g:airline_powerline_fonts = 1
+  let g:airline#extensions#branch#enabled = 1
+   let g:airline_powerline_fonts =   1
+let g:airline#extensions#tabline#enabled =	 1
+let g:airline#extensions#whitespace#enabled = 0
 
 hi Visual ctermbg=242
 hi VisualNOS ctermbg=242
@@ -71,20 +71,23 @@ let g:NERDTreeDirArrowCollapsible = ' ▾'
 
 map ; <Cmd>CocCommand explorer<CR>
 map <CR> :Files<CR>
-map <C-_> :q<CR>
-map <C-s> :mkview<CR>:w<CR>
-map T :new<CR>:term<CR>
-map <tab> :loadview<CR>
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+map <C-s> :w<CR>
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 nmap <silent> <C-l> :noh <CR>
 nmap <silent> ' :TagbarToggle <CR>
-nmap \ <Plug>(lcn-menu)
 nmap - zc
 nmap = zo
 nmap + zR
 nmap _ zM
+nmap <leader>d :StripWhitespace <CR>
 
-set foldmethod=syntax
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+set foldmethod=indent
 
 augroup numbertoggle
 	autocmd!
@@ -100,21 +103,27 @@ set tabstop=4
 set softtabstop=0 noexpandtab
 set shiftwidth=4
 
-let g:LanguageClient_serverCommands = {
-	\ 'c': ['ccls'],
-	\ 'cpp': ['ccls'],
-	\ 'objc': ['ccls'],
-	\ 'python': ['pyls'],
-	\ }
-
-let g:LanguageClient_useVirtualText = "CodeLens"
-
 let g:lsp_cxx_hl_use_text_props = 1
 
-augroup nasm_ft
+"augroup nasm_ft
+"	au!
+"	autocmd BufRead,BufNewFile *.asm set filetype=nasm
+"	autocmd BufNewFile,BufRead *.asm   set syntax=nasm
+"augroup END
+
+augroup asm_x64_ft
 	au!
-	autocmd BufRead,BufNewFile *.asm set filetype=nasm
-	autocmd BufNewFile,BufRead *.asm   set syntax=nasm
+	autocmd BufRead,BufNewFile *.x64.s set filetype=asm
+	autocmd BufNewFile,BufRead *.x64.s set syntax=asm
+	autocmd BufRead,BufNewFile *.x64.S set filetype=asm
+	autocmd BufNewFile,BufRead *.x64.S set syntax=asm
+augroup END
+augroup asm_aa64_ft
+	au!
+	autocmd BufRead,BufNewFile *.aa64.S set filetype=arm64asm
+	autocmd BufNewFile,BufRead *.aa64.S set syntax=arm64asm
+	autocmd BufRead,BufNewFile *.aa64.S set filetype=arm64asm
+	autocmd BufNewFile,BufRead *.aa64.S set syntax=arm64asm
 augroup END
 
-let g:coc_global_extensions = ['coc-git', 'coc-json', 'coc-python', 'coc-explorer', 'coc-tsserver', 'coc-highlight']
+let g:coc_global_extensions = ['coc-git', 'coc-json', 'coc-python', 'coc-explorer', 'coc-tsserver', 'coc-highlight', 'coc-solargraph']
