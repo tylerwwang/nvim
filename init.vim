@@ -6,13 +6,13 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'editorconfig/editorconfig-vim'
 Plug 'universal-ctags/ctags'
 Plug 'terryma/vim-multiple-cursors'
-Plug 'tpope/vim-surround'
+"Plug 'tpope/vim-surround'
 Plug 'tommcdo/vim-lion'
 Plug 'sheerun/vim-polyglot'
 Plug 'jackguo380/vim-lsp-cxx-highlight'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-scripts/delimitMate.vim'
-Plug 'majutsushi/tagbar'
+"Plug 'majutsushi/tagbar'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'tpope/vim-repeat'
@@ -81,11 +81,14 @@ nmap = zo
 nmap + zR
 nmap _ zM
 nmap <leader>d :StripWhitespace <CR>
+nmap <silent> gd :bd <CR>
 
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
+nmap <silent> <leader>gd <Plug>(coc-definition)
+nmap <silent> <leader>gy <Plug>(coc-type-definition)
+nmap <silent> <leader>gi <Plug>(coc-implementation)
+nmap <silent> <leader>gr <Plug>(coc-references)
+
+nmap <silent> <leader>l :Agit<CR>
 
 set foldmethod=indent
 
