@@ -11,6 +11,10 @@
 	},
 	"git.removedSign.text": "—",
 
+	"suggest.noselect": true,
+
+	"coc.preferences.jumpCommand": "split",
+
 	"explorer.icon.enableNerdfont": true,
 	"explorer.icon.source": "vim-devicons",
 	"explorer.width": 30,
