@@ -18,6 +18,7 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'cohama/agit.vim'
 Plug 'jreybert/vimagit'
 Plug 'sakhnik/nvim-gdb'
+Plug 'instant-markdown/vim-instant-markdown', {'for': 'markdown', 'do': 'yarn install'}
 call plug#end()
 
 "Dependancies
@@ -51,6 +52,7 @@ let g:airline#extensions#whitespace#enabled = 0
 hi Visual ctermbg=242
 hi VisualNOS ctermbg=242
 hi Function ctermfg=178 cterm=bold
+hi Search ctermfg=129 ctermbg=226 cterm=bold
 
 hi PreProc ctermfg=97
 hi Macro ctermfg=130 cterm=bold
@@ -99,6 +101,9 @@ nnoremap <silent><leader>wM :<C-u>exe 'call MemWatchR(' . v:count1 . ')'<CR>
 nmap <silent><leader>wu :doautocmd User NvimGdbQuery<CR>
 nmap <silent><leader>wv :GdbCreateWatch fr v<CR>
 nmap <silent><leader>wa :GdbCreateWatch disassemble --frame<CR>
+
+nmap <leader>mp :InstantMarkdownPreview<CR>
+nmap <leader>ms :InstantMarkdownStop<CR>
 
 command! CBuild !./compile.sh
 command! -nargs=* CConfig !./configure.sh <f-args>
@@ -202,3 +207,6 @@ augroup lldb_st
 augroup END
 
 let g:coc_global_extensions = ['coc-git', 'coc-json', 'coc-python', 'coc-explorer', 'coc-tsserver', 'coc-highlight', 'coc-solargraph']
+
+filetype plugin on
+let g:instant_markdown_autostart = 0
