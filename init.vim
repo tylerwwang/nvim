@@ -80,7 +80,7 @@ nmap - zc
 nmap = zo
 nmap + zR
 nmap _ zM
-nmap <leader>d :StripWhitespace <CR>
+nmap <leader>D :StripWhitespace <CR>
 
 nmap <silent><leader>gd <Plug>(coc-definition)
 nmap <silent><leader>gy <Plug>(coc-type-definition)
@@ -93,12 +93,12 @@ nmap <silent><leader>dw :call Watch()<CR>
 nmap <silent><leader>dt :GdbLopenBacktrace <CR>
 nmap <silent><leader>dq :GdbDebugStop <CR>
 
-nmap <silent><leader>wr :GdbCreateWatch register read <CR>
+nmap <silent><leader>wr :GdbCreateWatch register read<CR>
 nnoremap <silent><leader>wm :<C-u>exe 'call MemWatch(' . v:count1 . ')'<CR>
 nnoremap <silent><leader>wM :<C-u>exe 'call MemWatchR(' . v:count1 . ')'<CR>
 nmap <silent><leader>wu :doautocmd User NvimGdbQuery<CR>
 nmap <silent><leader>wv :GdbCreateWatch fr v<CR>
-nmap <silent><leader>wd :GdbCreateWatch di -f<CR>
+nmap <silent><leader>wa :GdbCreateWatch disassemble --frame<CR>
 
 command! CBuild !./compile.sh
 command! -nargs=* CConfig !./configure.sh <f-args>
@@ -107,7 +107,6 @@ command! -nargs=* CRun call CRun(<f-args>)
 
 function! CRun(file)
 	execute "vsplit"
-	"terminal "./run.sh " . a:file
 	execute "term ./run.sh " .a:file
 endfunction
 
@@ -172,10 +171,34 @@ augroup asm_x64_ft
 augroup END
 augroup asm_aa64_ft
 	au!
-	autocmd BufRead,BufNewFile *.aa64.S set filetype=arm64asm
-	autocmd BufNewFile,BufRead *.aa64.S set syntax=arm64asm
-	autocmd BufRead,BufNewFile *.aa64.S set filetype=arm64asm
-	autocmd BufNewFile,BufRead *.aa64.S set syntax=arm64asm
+	autocmd BufRead,BufNewFile *.aa64.s set filetype=aarch64
+	autocmd BufNewFile,BufRead *.aa64.s set syntax=aarch64
+	autocmd BufRead,BufNewFile *.aa64.S set filetype=aarch64
+	autocmd BufNewFile,BufRead *.aa64.S set syntax=aarch64
+augroup END
+
+function! LldbAcmd()
+	let l:id = bufnr("disassemble --frame")
+	if l:id != -1
+		call win_execute(win_findbuf(l:id)[0], "au! TextChanged <buffer> execute \"%s/.\\\\[\\\\d\\\\+m/\\t/ge\"", 1)
+		call win_execute(win_findbuf(l:id)[0], "%s/.\\[\\d\\+m/\t/ge", 1)
+	endif
+endfunction
+
+augroup lldb_st
+	au!
+	autocmd User NvimGdbQuery call LldbAcmd()
+	autocmd BufEnter,BufNewFile disassemble?--frame set syntax=LLDB_ASM
+	autocmd BufEnter,BufNewFile disassemble?--frame set filetype=LLDB_ASM
+
+	autocmd BufEnter,BufNewFile  x?-s2?-fx?-c* set syntax=LLDB_MEM
+	autocmd BufEnter,BufNewFile x?-s2?-fx?-c* set filetype=LLDB_MEM
+
+	autocmd BufEnter,BufNewFile  fr?v set syntax=LLDB_VAR
+	autocmd BufEnter,BufNewFile fr?v set filetype=LLDB_VAR
+
+	autocmd BufEnter,BufNewFile  register?read set syntax=LLDB_REG
+	autocmd BufEnter,BufNewFile register?read set filetype=LLDB_REG
 augroup END
 
 let g:coc_global_extensions = ['coc-git', 'coc-json', 'coc-python', 'coc-explorer', 'coc-tsserver', 'coc-highlight', 'coc-solargraph']

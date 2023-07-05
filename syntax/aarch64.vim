@@ -223,9 +223,12 @@ syntax keyword AArch64Mnemonic XTN XTN2
 syntax keyword AArch64Mnemonic ZIP1 ZIP2
 
 syntax match AArch64Macro  /#[_a-zA-Z][_a-zA-Z0-9]*/
+
 syntax match AArch64Number /#-\?\d\+/
 syntax match AArch64Number /#([^)]\+)/
-" TODO(compnerd) add floating point and hexadecimal numeric literal
+syntax match AArch64Number /#-\?0x\x\+/
+syntax match AArch64Number /#-\?0b[01]\+/
+syntax match AArch64Number /#-\?\d\+\.\d\+/
 
 " NOTE(compnerd) this must be matched after numerics
 syntax match AArch64Label /\d\{1,2\}[:fb]/
@@ -266,6 +269,9 @@ syntax keyword AArch64Register wzr xzr
 
 syntax keyword AArch64Register sp pc pstate
 
+syntax match AArch64String /".*"/
+syntax match AArch64String /\'.*\'/
+
 syntax match AArch64Type /[@%]function/
 syntax match AArch64Type /[@%]object/
 syntax match AArch64Type /[@%]tls_object/
@@ -285,6 +291,7 @@ highlight default link AArch64Operator   Operator
 highlight default link AArch64Register   StorageClass
 highlight default link AArch64Type       Tag
 highlight default link AArch64TODO       Todo
+highlight default link AArch64String     String
 
-let b:current_syntax = "arm64asm"
+let b:current_syntax = "aarch64"
 
