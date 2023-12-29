@@ -130,7 +130,7 @@ command! CBuild !./compile.sh
 command! -nargs=* CConfig !./configure.sh <f-args>
 command! CClean !./clean.sh
 command! -nargs=* CRun call CRun(<f-args>)
-command! td bp<bar>sp<bar>bn<bar>bd
+command! Td bp<bar>sp<bar>bn<bar>bd
 command! InitCScript !~/.config/nvim/c_script.sh
 
 function! CRun(file)
