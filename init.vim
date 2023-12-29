@@ -19,6 +19,8 @@ Plug 'cohama/agit.vim'
 Plug 'jreybert/vimagit'
 Plug 'sakhnik/nvim-gdb'
 Plug 'instant-markdown/vim-instant-markdown', {'for': 'markdown', 'do': 'yarn install'}
+Plug 'Shirk/vim-gas'
+Plug 'xuhdev/vim-latex-live-preview', {'for': 'tex'}
 call plug#end()
 
 "Dependancies
@@ -32,7 +34,10 @@ let g:nvimgdb_use_cmake_to_find_executables = 0
 syntax on
 set t_Co=256
 
+set wrap
+set nolist
 set cursorline
+set linebreak
 
 let g:molokai_original = 1
 colorscheme molokai
@@ -45,9 +50,21 @@ let g:airline_symbols.colnr = ''
 let g:airline_section_y = ''
 let g:airline#extensions#tagbar#enabled = 1
 let g:airline#extensions#branch#enabled = 1
+let g:airline#extensions#coc#enabled = 1
 let g:airline_powerline_fonts =   1
 let g:airline#extensions#tabline#enabled =	 1
 let g:airline#extensions#whitespace#enabled = 0
+
+function! s:update_git_status()
+  let g:airline_section_b = "%{get(g:,'coc_git_status','')}"
+endfunction
+
+let g:airline_section_b = "%{get(g:,'coc_git_status','')}"
+
+autocmd User CocGitStatusChange call s:update_git_status()
+
+autocmd Filetype tex setl updatetime=1
+let g:livepreview_previewer = 'open -a Preview'
 
 hi Visual ctermbg=242
 hi VisualNOS ctermbg=242
@@ -71,7 +88,7 @@ hi ExtraWhitespace ctermbg=236
 let g:NERDTreeDirArrowExpandable = ' ▸'
 let g:NERDTreeDirArrowCollapsible = ' ▾'
 
-map <silent>; <Cmd>CocCommand explorer<CR>
+nmap <silent> <S-tab> <Cmd>CocCommand explorer<CR>
 map <silent><CR> :Files<CR>
 map <C-s> :w<CR>
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
@@ -90,7 +107,7 @@ nmap <silent><leader>gi <Plug>(coc-implementation)
 nmap <silent><leader>gr <Plug>(coc-references)
 
 nmap <leader>dc :Gdb<Space>
-nmap <leader>dL :GdbStartLLDB lldb bin/debug/
+nmap <leader>dL :GdbStartLLDB lldb out/debug/
 nmap <silent><leader>dw :call Watch()<CR>
 nmap <silent><leader>dt :GdbLopenBacktrace <CR>
 nmap <silent><leader>dq :GdbDebugStop <CR>
@@ -105,10 +122,16 @@ nmap <silent><leader>wa :GdbCreateWatch disassemble --frame<CR>
 nmap <leader>mp :InstantMarkdownPreview<CR>
 nmap <leader>ms :InstantMarkdownStop<CR>
 
+nnoremap <M-w> <C-w>
+nmap <silent><leader>s :split <CR>
+nmap <silent><leader>v :vsplit <CR>
+
 command! CBuild !./compile.sh
 command! -nargs=* CConfig !./configure.sh <f-args>
 command! CClean !./clean.sh
 command! -nargs=* CRun call CRun(<f-args>)
+command! td bp<bar>sp<bar>bn<bar>bd
+command! InitCScript !~/.config/nvim/c_script.sh
 
 function! CRun(file)
 	execute "vsplit"
@@ -169,10 +192,10 @@ let g:lsp_cxx_hl_use_text_props = 1
 
 augroup asm_x64_ft
 	au!
-	autocmd BufRead,BufNewFile *.x64.s set filetype=asm
-	autocmd BufNewFile,BufRead *.x64.s set syntax=asm
-	autocmd BufRead,BufNewFile *.x64.S set filetype=asm
-	autocmd BufNewFile,BufRead *.x64.S set syntax=asm
+	autocmd BufRead,BufNewFile *.x64.s set filetype=gas
+	autocmd BufNewFile,BufRead *.x64.s set syntax=gas
+	autocmd BufRead,BufNewFile *.x64.S set filetype=gas
+	autocmd BufNewFile,BufRead *.x64.S set syntax=gas
 augroup END
 augroup asm_aa64_ft
 	au!
@@ -206,7 +229,25 @@ augroup lldb_st
 	autocmd BufEnter,BufNewFile register?read set filetype=LLDB_REG
 augroup END
 
+augroup spell_ft
+	au!
+	autocmd BufRead,BufNewFile *.md setlocal spell spelllang=en_us
+	autocmd BufRead,BufNewFile *.html setlocal spell spelllang=en_us
+	autocmd BufRead,BufNewFile *.txt setlocal spell spelllang=en_us
+	autocmd BufRead,BufNewFile *.tex setlocal spell spelllang=en_us
+augroup END
+
+noremap j gj
+noremap k gk
+
+"augroup updown_ft
+"	au!
+"	autocmd BufRead,BufNewFile *.tex noremap <buffer> k gk
+"	autocmd BufRead,BufNewFile *.tex noremap <buffer> j gj
+"augroup END
+
 let g:coc_global_extensions = ['coc-git', 'coc-json', 'coc-python', 'coc-explorer', 'coc-tsserver', 'coc-highlight', 'coc-solargraph']
 
 filetype plugin on
 let g:instant_markdown_autostart = 0
+

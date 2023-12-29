@@ -10,6 +10,8 @@
 		}
 	},
 	"git.removedSign.text": "—",
+	"git.untrackedDecorator": "",
+	"git.changedDecorator": "",
 
 	"suggest.noselect": true,
 
