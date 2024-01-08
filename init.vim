@@ -91,8 +91,8 @@ let g:NERDTreeDirArrowCollapsible = ' ▾'
 nmap <silent> <S-tab> <Cmd>CocCommand explorer<CR>
 map <silent><CR> :Files<CR>
 map <C-s> :w<CR>
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <Tab> coc#pum#visible() ? coc#pum#next(1) : "\<Tab>"
+inoremap <expr> <S-Tab> coc#pum#visible() ? coc#pum#prev(1) : "\<S-Tab>"
 nmap <silent> <C-l> :noh <CR>
 nmap <silent> ' :TagbarToggle <CR>
 nmap - zc
@@ -125,12 +125,14 @@ nmap <leader>ms :InstantMarkdownStop<CR>
 nnoremap <M-w> <C-w>
 nmap <silent><leader>s :split <CR>
 nmap <silent><leader>v :vsplit <CR>
+nmap , @@
 
 command! CBuild !./compile.sh
 command! -nargs=* CConfig !./configure.sh <f-args>
 command! CClean !./clean.sh
 command! -nargs=* CRun call CRun(<f-args>)
 command! Td bp<bar>sp<bar>bn<bar>bd
+command! Tdo bp<bar>sp<bar>bn<bar>bd!
 command! InitCScript !~/.config/nvim/c_script.sh
 
 function! CRun(file)

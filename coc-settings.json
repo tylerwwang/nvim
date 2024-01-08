@@ -16,6 +16,7 @@
 	"suggest.noselect": true,
 
 	"coc.preferences.jumpCommand": "split",
+	"diagnostic.checkCurrentLine": true,
 
 	"explorer.icon.enableNerdfont": true,
 	"explorer.icon.source": "vim-devicons",
