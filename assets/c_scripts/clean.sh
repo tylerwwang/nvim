@@ -15,7 +15,12 @@ then
 
 		cd $BUILD_FOLDER
 
+
 	make clean-all
+	cd ..
+	rm project.conf
+	cd ..
+	rm -r $BUILD_FOLDER
 
 else
 	echo "Projected not configured. Please configure the project before cleaning."
