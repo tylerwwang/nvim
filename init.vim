@@ -3,7 +3,6 @@ Plug 'tomasr/molokai'
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'editorconfig/editorconfig-vim'
-Plug 'universal-ctags/ctags'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'tommcdo/vim-lion'
 Plug 'sheerun/vim-polyglot'
@@ -14,6 +13,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'tpope/vim-repeat'
 Plug 'alvan/vim-closetag'
+Plug 'nvim-tree/nvim-web-devicons'
 Plug 'ryanoasis/vim-devicons'
 Plug 'cohama/agit.vim'
 Plug 'jreybert/vimagit'
@@ -21,15 +21,18 @@ Plug 'sakhnik/nvim-gdb'
 Plug 'instant-markdown/vim-instant-markdown', {'for': 'markdown', 'do': 'yarn install'}
 Plug 'Shirk/vim-gas'
 Plug 'xuhdev/vim-latex-live-preview', {'for': 'tex'}
+Plug 'preservim/tagbar'
+Plug 'akinsho/bufferline.nvim', { 'tag': '*' }
 call plug#end()
 
 "Dependancies
 "ctags
 "node
-"solargraph
 "pynvim
 let g:nvimgdb_use_find_executables = 0
 let g:nvimgdb_use_cmake_to_find_executables = 0
+
+set termguicolors
 
 syntax on
 set t_Co=256
@@ -38,6 +41,7 @@ set wrap
 set nolist
 set cursorline
 set linebreak
+set mousemoveevent
 
 let g:molokai_original = 1
 colorscheme molokai
@@ -52,7 +56,6 @@ let g:airline#extensions#tagbar#enabled = 1
 let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#coc#enabled = 1
 let g:airline_powerline_fonts =   1
-let g:airline#extensions#tabline#enabled =	 1
 let g:airline#extensions#whitespace#enabled = 0
 
 function! s:update_git_status()
@@ -66,24 +69,25 @@ autocmd User CocGitStatusChange call s:update_git_status()
 autocmd Filetype tex setl updatetime=1
 let g:livepreview_previewer = 'open -a Preview'
 
-hi Visual ctermbg=242
-hi VisualNOS ctermbg=242
-hi Function ctermfg=178 cterm=bold
-hi Search ctermfg=129 ctermbg=226 cterm=bold
+hi Visual ctermbg=242 guibg=#6c6c6c
+hi VisualNOS ctermbg=242 guibg=#6c6c6c
+hi Function ctermfg=178 cterm=bold gui=bold guifg=#FFDD00
+hi Search ctermfg=129 ctermbg=226 cterm=bold gui=bold guifg=#af00ff guibg=#ffff00
 
-hi PreProc ctermfg=97
-hi Macro ctermfg=130 cterm=bold
-hi PreCondit guifg=#875faf ctermfg=97 cterm=none
+hi PreProc ctermfg=97 guifg=#875faf
+hi Macro ctermfg=130 cterm=bold gui=bold guifg=#af5f00
+hi PreCondit guifg=#875faf ctermfg=97 cterm=none gui=none
 
-hi Directory ctermfg=183
-hi CursorLineNr ctermfg=220 ctermbg=232
-hi LineNr ctermfg=240 ctermbg=233
-hi Number ctermfg=138
+hi Directory ctermfg=183 guifg=#d7afff
+hi String guifg=#E0D879
+hi CursorLineNr ctermfg=220 ctermbg=232 guifg=#ffd700 guibg=#080808
+hi LineNr ctermfg=240 ctermbg=233 guifg=#585858 guibg=#121212
+hi Number ctermfg=138 guifg=#af8787
 
-hi MatchParen cterm=underline ctermfg=220 ctermbg=none
-hi Normal ctermbg=233
+hi MatchParen cterm=underline ctermfg=220 ctermbg=none gui=underline guibg=none guifg=#ffd700
+hi Normal ctermbg=233 guibg=#121212
 
-hi ExtraWhitespace ctermbg=236
+hi ExtraWhitespace ctermbg=236 guibg=#303030
 
 let g:NERDTreeDirArrowExpandable = ' ▸'
 let g:NERDTreeDirArrowCollapsible = ' ▾'
@@ -100,6 +104,12 @@ nmap = zo
 nmap + zR
 nmap _ zM
 nmap <leader>D :StripWhitespace <CR>
+
+vnoremap <leader>p "_dP
+
+vnoremap f "_d
+vnoremap ff "_dd
+nnoremap ff "_dd
 
 nmap <silent><leader>gd <Plug>(coc-definition)
 nmap <silent><leader>gy <Plug>(coc-type-definition)
@@ -127,17 +137,45 @@ nmap <silent><leader>s :split <CR>
 nmap <silent><leader>v :vsplit <CR>
 nmap , @@
 
-command! CBuild !./compile.sh
+nmap <silent><leader>- :Td <CR>
+nmap <silent><leader>q :Tq <CR>
+
+command! CBuild call CBuild()
 command! -nargs=* CConfig !./configure.sh <f-args>
-command! CClean !./clean.sh
+command! CClean !./make.sh clean-all
+command! CReset !./reset.sh
+command! CTest call CTest()
+command! GitPush !git push origin
+command! GitPull !git pull
 command! -nargs=* CRun call CRun(<f-args>)
 command! Td bp<bar>sp<bar>bn<bar>bd
 command! Tdo bp<bar>sp<bar>bn<bar>bd!
+command! Tq bp<bar>sp<bar>bn<bar>bd<bar>q
+command! Tqo bp<bar>sp<bar>bn<bar>bd!<bar>q!
 command! InitCScript !~/.config/nvim/c_script.sh
 
 function! CRun(file)
-	execute "vsplit"
+	call CheckTerm()
 	execute "term ./run.sh " .a:file
+endfunction
+
+function! CTest()
+	call CheckTerm()
+	execute "term ./test.sh "
+endfunction
+
+function! CBuild()
+	call CheckTerm()
+	execute "term ./make.sh "
+endfunction
+
+function! CheckTerm()
+	if getwininfo(win_getid(winnr('$')))[0].terminal
+		call win_gotoid(win_getid(winnr('$')))
+	else
+		execute "botright split"
+		execute "resize 25"
+	endif
 endfunction
 
 nmap <silent> <leader>l :Agit<CR>
@@ -235,21 +273,120 @@ augroup spell_ft
 	au!
 	autocmd BufRead,BufNewFile *.md setlocal spell spelllang=en_us
 	autocmd BufRead,BufNewFile *.html setlocal spell spelllang=en_us
-	autocmd BufRead,BufNewFile *.txt setlocal spell spelllang=en_us
+	autocmd FileType text setlocal spell
 	autocmd BufRead,BufNewFile *.tex setlocal spell spelllang=en_us
 augroup END
 
 noremap j gj
 noremap k gk
 
-"augroup updown_ft
-"	au!
-"	autocmd BufRead,BufNewFile *.tex noremap <buffer> k gk
-"	autocmd BufRead,BufNewFile *.tex noremap <buffer> j gj
-"augroup END
-
-let g:coc_global_extensions = ['coc-git', 'coc-json', 'coc-python', 'coc-explorer', 'coc-tsserver', 'coc-highlight', 'coc-solargraph']
+let g:coc_global_extensions = ['coc-git', 'coc-json', 'coc-python', 'coc-explorer', 'coc-tsserver', 'coc-highlight']
 
 filetype plugin on
 let g:instant_markdown_autostart = 0
 
+lua << EOF
+local bufferline = require("bufferline")
+bufferline.setup({
+	options = {
+		diagnostics = "coc",
+		numbers = "buffer_id",
+		themable = false,
+        hover = {
+            enabled = true,
+            delay = 10,
+            reveal = {'close'}
+        },
+        diagnostics_indicator = function(count, level, diagnostics_dict, context)
+            return "("..count..")"
+        end,
+        offsets = {
+    		{
+    			filetype = "coc-explorer",
+    			text = "File Explorer",
+    			text_align = "center",
+    			separator = true
+    		}
+        },
+		groups = {
+			options = {
+      			toggle_hidden_on_enter = true -- when you re-enter a hidden group this options re-opens that group so the buffer is visible
+			},
+			items = {
+				{
+					name = "CMake",
+					priority = 3,
+					highlight = {sp = "orange"},
+					auto_close = false,  -- whether or not close this group if it doesn't contain the current buffer
+					matcher = function(buf)
+						return buf.name:match('CMakeLists%.txt') or buf.name:match('%.cmake')
+					end,
+				  	separator = { -- Optional
+						style = require('bufferline.groups').separator.pill
+					},
+				},
+				{
+					name = "C",
+					priority = 1,
+					highlight = {sp = "purple"},
+					auto_close = false,  -- whether or not close this group if it doesn't contain the current buffer
+					matcher = function(buf)
+						return buf.name:match('%.c') or buf.name:match('%.h') or  buf.name:match('%.cpp') or buf.name:match('%.hpp')
+					end,
+				  	separator = { -- Optional
+						style = require('bufferline.groups').separator.pill
+					},
+				},
+				{
+					name = "Py",
+					priority = 2,
+					highlight = {sp = "green"},
+					auto_close = false,  -- whether or not close this group if it doesn't contain the current buffer
+					matcher = function(buf)
+						return buf.name:match('%.py')
+					end,
+				  	separator = { -- Optional
+						style = require('bufferline.groups').separator.pill
+					},
+				},
+				{
+					name = "Docs",
+					priority = 4,
+					highlight = {sp = "cyan"},
+					auto_close = false,  -- whether or not close this group if it doesn't contain the current buffer
+					matcher = function(buf)
+						return buf.name:match('%.md') or buf.name:match('%.txt') and (not buf.name:match('CMakeLists%.txt')) or buf.name:match('%.tex')
+					end,
+				  	separator = { -- Optional
+						style = require('bufferline.groups').separator.pill
+					},
+				},
+				{
+					name = "Shell",
+					priority = 5,
+					highlight = {sp = "yellow"},
+					auto_close = false,  -- whether or not close this group if it doesn't contain the current buffer
+					matcher = function(buf)
+						return buf.name:match('%.sh')
+					end,
+				  	separator = { -- Optional
+						style = require('bufferline.groups').separator.pill
+					},
+				},
+				{
+					name = "Out",
+					priority = 6,
+					highlight = {sp = "gray"},
+					auto_close = true,  -- whether or not close this group if it doesn't contain the current buffer
+					matcher = function(buf)
+						return buf.buftype:match('terminal')
+					end,
+				  	separator = { -- Optional
+						style = require('bufferline.groups').separator.pill
+					},
+				}
+			}
+		}
+	}
+})
+EOF

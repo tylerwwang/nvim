@@ -15,11 +15,13 @@ then
 
 		cd $BUILD_FOLDER
 
-	echo "\033[1;34mBuilding Project...\033[0m"
-	make
-	echo ""
-	echo ""
-	make test
+
+	make clean-all
+	cd ..
+	rm project.conf
+	cd ..
+	rm -r $BUILD_FOLDER
+
 else
-	echo "Projected not configured. Please configure the project before testing."
+	echo "Projected not configured. Please configure the project before cleaning."
 fi
