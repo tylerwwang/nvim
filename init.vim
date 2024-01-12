@@ -301,11 +301,6 @@ bufferline.setup({
 		diagnostics = "coc",
 		numbers = "buffer_id",
 		themable = false,
-        hover = {
-            enabled = true,
-            delay = 10,
-            reveal = {'close'}
-        },
         diagnostics_indicator = function(count, level, diagnostics_dict, context)
             return "("..count..")"
         end,
