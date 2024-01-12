@@ -21,8 +21,11 @@ Plug 'sakhnik/nvim-gdb'
 Plug 'instant-markdown/vim-instant-markdown', {'for': 'markdown', 'do': 'yarn install'}
 Plug 'Shirk/vim-gas'
 Plug 'xuhdev/vim-latex-live-preview', {'for': 'tex'}
+Plug 'lervag/vimtex'
 Plug 'preservim/tagbar'
 Plug 'akinsho/bufferline.nvim', { 'tag': '*' }
+Plug 'miyakogi/conoline.vim'
+Plug 'gucciwang123/vim-airline-themes'
 call plug#end()
 
 "Dependancies
@@ -58,6 +61,8 @@ let g:airline#extensions#coc#enabled = 1
 let g:airline_powerline_fonts =   1
 let g:airline#extensions#whitespace#enabled = 0
 
+let g:conoline_auto_enable = 1
+
 function! s:update_git_status()
   let g:airline_section_b = "%{get(g:,'coc_git_status','')}"
 endfunction
@@ -81,20 +86,24 @@ hi PreCondit guifg=#875faf ctermfg=97 cterm=none gui=none
 hi Directory ctermfg=183 guifg=#d7afff
 hi String guifg=#E0D879
 hi CursorLineNr ctermfg=220 ctermbg=232 guifg=#ffd700 guibg=#080808
+hi CursorLine guibg=#383838
 hi LineNr ctermfg=240 ctermbg=233 guifg=#585858 guibg=#121212
 hi Number ctermfg=138 guifg=#af8787
 
-hi MatchParen cterm=underline ctermfg=220 ctermbg=none gui=underline guibg=none guifg=#ffd700
+hi MatchParen cterm=underline ctermfg=220 ctermbg=none gui=underline,bold guibg=none guifg=#5ec718
 hi Normal ctermbg=233 guibg=#121212
 
 hi ExtraWhitespace ctermbg=236 guibg=#303030
 
-let g:NERDTreeDirArrowExpandable = ' ▸'
-let g:NERDTreeDirArrowCollapsible = ' ▾'
+let g:airline_theme='murmur'
 
 nmap <silent> <S-tab> <Cmd>CocCommand explorer<CR>
 map <silent><CR> :Files<CR>
-map <C-s> :w<CR>
+
+nnoremap <C-s> :w<CR>
+inoremap <C-s> :w<CR>
+vnoremap <C-s> :w<CR>
+
 inoremap <expr> <Tab> coc#pum#visible() ? coc#pum#next(1) : "\<Tab>"
 inoremap <expr> <S-Tab> coc#pum#visible() ? coc#pum#prev(1) : "\<S-Tab>"
 nmap <silent> <C-l> :noh <CR>
@@ -132,7 +141,6 @@ nmap <silent><leader>wa :GdbCreateWatch disassemble --frame<CR>
 nmap <leader>mp :InstantMarkdownPreview<CR>
 nmap <leader>ms :InstantMarkdownStop<CR>
 
-nnoremap <M-w> <C-w>
 nmap <silent><leader>s :split <CR>
 nmap <silent><leader>v :vsplit <CR>
 nmap , @@
@@ -144,7 +152,8 @@ command! CBuild call CBuild()
 command! -nargs=* CConfig !./configure.sh <f-args>
 command! CClean !./make.sh clean-all
 command! CReset !./reset.sh
-command! CTest call CTest()
+command! CReTest call CTest("r")
+command! CTest call CTest("")
 command! GitPush !git push origin
 command! GitPull !git pull
 command! -nargs=* CRun call CRun(<f-args>)
@@ -159,9 +168,9 @@ function! CRun(file)
 	execute "term ./run.sh " .a:file
 endfunction
 
-function! CTest()
+function! CTest(rerun)
 	call CheckTerm()
-	execute "term ./test.sh "
+	execute "term ./test.sh " .a:rerun
 endfunction
 
 function! CBuild()
@@ -310,7 +319,7 @@ bufferline.setup({
         },
 		groups = {
 			options = {
-      			toggle_hidden_on_enter = true -- when you re-enter a hidden group this options re-opens that group so the buffer is visible
+      			toggle_hidden_on_enter = false -- when you re-enter a hidden group this options re-opens that group so the buffer is visible
 			},
 			items = {
 				{
@@ -367,7 +376,7 @@ bufferline.setup({
 					highlight = {sp = "yellow"},
 					auto_close = false,  -- whether or not close this group if it doesn't contain the current buffer
 					matcher = function(buf)
-						return buf.name:match('%.sh')
+						return buf.name:match('%.sh') and (not buf.buftype:match('terminal'))
 					end,
 				  	separator = { -- Optional
 						style = require('bufferline.groups').separator.pill
