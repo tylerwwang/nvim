@@ -150,7 +150,7 @@ nmap <silent><leader>q :Tq <CR>
 
 command! CBuild call CBuild()
 command! -nargs=* CConfig !./configure.sh <f-args>
-command! CClean !./make.sh clean-all
+command! CClean !./make.sh clean
 command! CReset !./reset.sh
 command! CReTest call CTest("r")
 command! CTest call CTest("")
