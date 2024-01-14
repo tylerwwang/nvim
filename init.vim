@@ -154,6 +154,7 @@ command! CClean !./make.sh clean
 command! CReset !./reset.sh
 command! CReTest call CTest("r")
 command! CTest call CTest("")
+command! T call Term()
 command! GitPush !git push origin
 command! GitPull !git pull
 command! -nargs=* CRun call CRun(<f-args>)
@@ -176,6 +177,11 @@ endfunction
 function! CBuild()
 	call CheckTerm()
 	execute "term ./make.sh "
+endfunction
+
+function! Term()
+	call CheckTerm()
+	execute "term"
 endfunction
 
 function! CheckTerm()
@@ -238,6 +244,8 @@ let g:lsp_cxx_hl_use_text_props = 1
 "	autocmd BufRead,BufNewFile *.asm set filetype=nasm
 "	autocmd BufNewFile,BufRead *.asm   set syntax=nasm
 "augroup END
+
+let g:c_syntax_for_h = 1
 
 augroup asm_x64_ft
 	au!

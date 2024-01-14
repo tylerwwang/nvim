@@ -4,8 +4,8 @@ ARGS=$1
 
 PROJ_DIR="$PWD"
 
-mkdir -p .build
-touch ".build/project.conf"
+mkdir -p .build 2> /dev/null
+touch ".build/project.conf" > /dev/null
 
 if [ "$ARGS" = "debug" ]
 then
@@ -18,7 +18,7 @@ then
 
 	export RUNTIME_DIR="";
 
-	mkdir .build/debug
+	mkdir .build/debug 2> /dev/null
 	cd .build/debug/
 	cmake ../.. \
 		-DCMAKE_BUILD_TYPE=Debug \
@@ -26,7 +26,7 @@ then
 		-DCMAKE_LIBRARY_OUTPUT_DIRECTORY="$PROJ_DIR"/out/debug \
 		-DCMAKE_RUNTIME_OUTPUT_DIRECTORY="$PROJ_DIR"/out/debug
 
-	mv compile_commands.json ../../
+	mv -f compile_commands.json ../../ 2> /dev/null
 
 elif [ "$ARGS" = "release" ]
 then
@@ -38,7 +38,7 @@ then
 	echo "release" >> ".build/project.conf"
 	export RUNTIME_DIR="";
 
-	mkdir .build/release
+	mkdir .build/release 2> /dev/null
 	cd .build/release/
 	cmake ../.. \
 		-DCMAKE_BUILD_TYPE=Release \
@@ -46,7 +46,7 @@ then
 		-DCMAKE_LIBRARY_OUTPUT_DIRECTORY="$PROJ_DIR"/out/release \
 		-DCMAKE_RUNTIME_OUTPUT_DIRECTORY="$PROJ_DIR"/out/release
 
-	mv compile_commands.json ../../
+	mv -f compile_commands.json ../../ 2> /dev/null
 else
 	echo "Missing argument: build type missing from arguement list."
 fi

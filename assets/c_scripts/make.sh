@@ -18,6 +18,8 @@ then
 
 	make $TARGET
 
+	mv -f compile_commands.json ../../ 2> /dev/null
+
 	cd ../../
 else
 	echo "Projected not configured. Please configure the project before compilation."

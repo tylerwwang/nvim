@@ -3,6 +3,7 @@
 FILE=$1
 BUILD_FOLDER=""
 BIN_FOLDER=""
+ARGS=$1
 
 if [[ -a ".build/project.conf" ]]
 then
@@ -19,7 +20,14 @@ then
 	make
 	echo ""
 	echo ""
-	make test
+	echo "\033[1;34mTesting Project...\033[0m"
+
+	if [ "$ARGS" = "r" ]
+	then
+		ctest --output-on-failure --rerun-failed
+	else
+		ctest --output-on-failure
+	fi
 else
 	echo "Projected not configured. Please configure the project before testing."
 fi
