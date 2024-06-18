@@ -35,6 +35,10 @@ call plug#end()
 let g:nvimgdb_use_find_executables = 0
 let g:nvimgdb_use_cmake_to_find_executables = 0
 
+au FileType html let b:delimitMate_autoclose = 0
+let g:strip_whitespace_on_save = 1
+let g:strip_max_file_size = 2000
+
 set termguicolors
 
 syntax on
@@ -162,7 +166,8 @@ command! Td bp<bar>sp<bar>bn<bar>bd
 command! Tdo bp<bar>sp<bar>bn<bar>bd!
 command! Tq bp<bar>sp<bar>bn<bar>bd<bar>q
 command! Tqo bp<bar>sp<bar>bn<bar>bd!<bar>q!
-command! InitCScript !~/.config/nvim/c_script.sh
+command! InitCScript !~/config/nvim/c_script.sh
+command! CloseTerm :BufferLineGroupClose Out
 
 function! CRun(file)
 	call CheckTerm()
@@ -299,6 +304,10 @@ noremap k gk
 
 let g:coc_global_extensions = ['coc-git', 'coc-json', 'coc-python', 'coc-explorer', 'coc-tsserver', 'coc-highlight']
 
+set updatetime=100
+au CursorHold * sil call CocActionAsync('highlight')
+au CursorHoldI * sil call CocActionAsync('showSignatureHelp')
+
 filetype plugin on
 let g:instant_markdown_autostart = 0
 
@@ -312,6 +321,7 @@ bufferline.setup({
         diagnostics_indicator = function(count, level, diagnostics_dict, context)
             return "("..count..")"
         end,
+		diagnostics_update_in_insert = true,
         offsets = {
     		{
     			filetype = "coc-explorer",
@@ -327,7 +337,7 @@ bufferline.setup({
 			items = {
 				{
 					name = "CMake",
-					priority = 3,
+					priority = 4,
 					highlight = {sp = "orange"},
 					auto_close = false,  -- whether or not close this group if it doesn't contain the current buffer
 					matcher = function(buf)
@@ -339,11 +349,23 @@ bufferline.setup({
 				},
 				{
 					name = "C",
-					priority = 1,
+					priority = 2,
 					highlight = {sp = "purple"},
 					auto_close = false,  -- whether or not close this group if it doesn't contain the current buffer
 					matcher = function(buf)
-						return buf.name:match('%.c') or buf.name:match('%.h') or  buf.name:match('%.cpp') or buf.name:match('%.hpp')
+						return buf.name:match('%.c') and (not buf.name:match('%.c.+')) or buf.name:match('%.h') and (not buf.name:match('%.h.+')) or  buf.name:match('%.cpp') or buf.name:match('%.hpp')
+					end,
+				  	separator = { -- Optional
+						style = require('bufferline.groups').separator.pill
+					},
+				},
+				{
+					name = "ASM",
+					priority = 3,
+					highlight = {sp = "red"},
+					auto_close = false,  -- whether or not close this group if it doesn't contain the current buffer
+					matcher = function(buf)
+						return (buf.name:match('%.[sS]') and (not buf.name:match('%.[sS].+')))
 					end,
 				  	separator = { -- Optional
 						style = require('bufferline.groups').separator.pill
@@ -351,7 +373,7 @@ bufferline.setup({
 				},
 				{
 					name = "Py",
-					priority = 2,
+					priority = 1,
 					highlight = {sp = "green"},
 					auto_close = false,  -- whether or not close this group if it doesn't contain the current buffer
 					matcher = function(buf)
@@ -362,8 +384,32 @@ bufferline.setup({
 					},
 				},
 				{
+					name = "Web",
+					priority = 5,
+					highlight = {sp = "green"},
+					auto_close = false,  -- whether or not close this group if it doesn't contain the current buffer
+					matcher = function(buf)
+						return buf.name:match('%.html') or buf.name:match('%.css') or buf.name:match('%.scss') or buf.name:match('%.js')
+					end,
+				  	separator = { -- Optional
+						style = require('bufferline.groups').separator.pill
+					},
+				},
+				{
+					name = "Conf",
+					priority = 6,
+					highlight = {sp = "purple"},
+					auto_close = false,  -- whether or not close this group if it doesn't contain the current buffer
+					matcher = function(buf)
+						return buf.name:match('%.conf') or buf.name:match('%.yml') or buf.name:match('%.json')
+					end,
+				  	separator = { -- Optional
+						style = require('bufferline.groups').separator.pill
+					},
+				},
+				{
 					name = "Docs",
-					priority = 4,
+					priority = 7,
 					highlight = {sp = "cyan"},
 					auto_close = false,  -- whether or not close this group if it doesn't contain the current buffer
 					matcher = function(buf)
@@ -375,7 +421,7 @@ bufferline.setup({
 				},
 				{
 					name = "Shell",
-					priority = 5,
+					priority = 8,
 					highlight = {sp = "yellow"},
 					auto_close = false,  -- whether or not close this group if it doesn't contain the current buffer
 					matcher = function(buf)
@@ -387,7 +433,7 @@ bufferline.setup({
 				},
 				{
 					name = "Out",
-					priority = 6,
+					priority = 9,
 					highlight = {sp = "gray"},
 					auto_close = true,  -- whether or not close this group if it doesn't contain the current buffer
 					matcher = function(buf)
