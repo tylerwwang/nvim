@@ -302,7 +302,7 @@ augroup END
 noremap j gj
 noremap k gk
 
-let g:coc_global_extensions = ['coc-git', 'coc-json', 'coc-python', 'coc-explorer', 'coc-tsserver', 'coc-highlight']
+let g:coc_global_extensions = ['coc-git', 'coc-json', 'coc-python', 'coc-explorer', 'coc-tsserver', 'coc-highlight', 'coc-html-css-support']
 
 set updatetime=100
 au CursorHold * sil call CocActionAsync('highlight')
