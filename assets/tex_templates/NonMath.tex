@@ -1,0 +1,42 @@
+\documentclass[12pt]{article}
+
+%Title
+\title {My Title}
+\author {Tyler Wang}
+\date{\today}
+
+	%Configuration
+	\usepackage{hanging}
+	\usepackage{fancyhdr}
+	\usepackage{lastpage}
+	\usepackage{setspace}
+	\usepackage[a4paper, left=1in,right=1in,top=1in,bottom=0.7in,footskip=0.6in,includeheadfoot]{geometry}
+	\usepackage[english]{babel}
+	\usepackage[autostyle, english = american]{csquotes}
+
+	\makeatletter
+	\edef\mytitle{\@title}
+	\edef\mydate{\@date}
+	\edef\myauthor{\@author}
+	\makeatother
+
+	\MakeOuterQuote{"}
+	\onehalfspacing
+	\setlength{\parskip}{5pt}
+
+	\newenvironment{Cite}{
+	\section*{References}
+	\begin{hangparas}{.25in}{1}}{\end{hangparas}}
+
+	\fancyhf{}
+	\fancyfoot[c]{\thepage}
+	\fancyhead[r]{\myauthor}
+	\fancyhead[l]{\mytitle}
+	\pagestyle{fancy}
+	\setlength{\headheight}{15pt}
+	%End Configuration
+
+\begin{document}
+\maketitle
+
+\end{document}

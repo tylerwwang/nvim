@@ -9,6 +9,7 @@
       		"rootPatterns": [".ccls", "compile_commands.json", ".vim/", ".git/", ".hg/"]
 		}
 	},
+
 	"git.removedSign.text": "—",
 	"git.untrackedDecorator": "",
 	"git.changedDecorator": "",
@@ -16,26 +17,65 @@
 	"suggest.noselect": true,
 
 	"coc.preferences.jumpCommand": "split",
-	"diagnostic.checkCurrentLine": true,
+
+	"diagnostic.errorSign": "",
+	"diagnostic.hintSign": "",
+	"diagnostic.warningSign": "",
+	"diagnostic.infoSign": "",
+
+	"coc.preferences.floatActions": true,
+
+	"ltex.diagnosticSeverity": {
+		"EN_UNPAIRED_BRACKETS": "hint",
+		"MORFOLOGIK_RULE_EN_US": "error",
+		"COMMA_PARENTHESIS_WHITESPACE": "hint",
+		"default":"warning"
+	},
+	"ltex.configurationTarget": {
+		"dictionary": "userExternalFile",
+		"hiddenFalsePositives": "workspaceExternalFile",
+		"disabledRules": "userExternalFile"
+	},
+	"ltex.latex.commands": {
+		"\\newmdtheoremenv{}{}": "ignore",
+		"\\renewcommand{}{}": "ignore",
+		"\\newcommand{}[]{}": "ignore",
+		"\\newcommand{}{}": "ignore",
+		"\\newenvironment{}{}": "ignore",
+		"\\newenvironment{}[]{}": "ignore",
+		"\\def{}": "ignore",
+		"\\begin{}": "ignore",
+		"\\end{}": "ignore",
+		"\\label{}": "ignore",
+		"\\documentclass[]{}": "ignore",
+		"\\eqref{}": "dummy",
+		"\\ref{}": "dummy",
+		"\\cite{}": "dummy",
+		"\\cite[]{}": "dummy",
+		"\\usepackage{}": "ignore",
+		"\\usetikzlibrary{}": "ignore",
+		"\\tikzset{}": "ignore",
+		"\\numberwithin{}{}": "ignore",
+		"\\pgfplotsset{}": "ignore",
+	},
+
+	"coc.preferences.disablePromptBuffers": true,
 
 	"explorer.icon.enableNerdfont": true,
-	"explorer.icon.source": "vim-devicons",
+	"explorer.icon.source": "nvim-web-devicons",
 	"explorer.width": 30,
 	"explorer.previewAction.onHover": "labeling",
-	"explorer.sources": [
-		{
-    		"name": "bookmark",
-    		"expand": true
-  		},
-  		{
-    		"name": "buffer",
-    		"expand": false,
-			"icon": "+"
-  		},
-  		{
-    		"name": "file",
-    		"expand": true
-  		}
-	],
-	"html-css-support.enable": true;
+	"explorer.sources": [{
+    	"name": "bookmark",
+    	"expand": true
+  	},
+  	{
+    	"name": "buffer",
+    	"expand": false,
+		"icon": "+"
+  	},
+  	{
+    	"name": "file",
+    	"expand": true
+  	}],
 }

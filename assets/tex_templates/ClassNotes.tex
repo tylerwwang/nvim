@@ -1,0 +1,124 @@
+\documentclass[12pt]{article}
+
+%Title
+\edef\mytitle{Class Name}
+\edef\mysubtitle{Lesson Name}
+\edef\mydate{\today}
+\edef\myauthor{Tyler Wang}
+
+	%Configuration
+	\usepackage{amssymb}
+	\usepackage{amsmath, esint}
+	\usepackage{amsthm}
+	\usepackage{array}
+	\usepackage{longtable}
+	\usepackage{varwidth}
+	\usepackage{mathtools}
+	\usepackage{pdfpages}
+	\usepackage{fancyhdr}
+	\usepackage[figurename=Figure]{caption}
+	\usepackage{empheq}
+	\usepackage{mdframed}
+	\usepackage[a4paper, left=1in,right=1in,top=1in,bottom=0.7in,footskip=0.6in,includeheadfoot]{geometry}
+	\usepackage{tikz}
+	\usepackage{pgfplots}
+	\usepackage{hyperref}
+	\usepackage{wrapfig}
+	\usepackage{enumitem}
+	\usepackage{setspace}
+	\usepackage{multirow}
+	\usepackage{enumitem}
+	\usepackage{afterpage}
+	\usepackage{lastpage}
+	\usepackage{zref-totpages}
+
+	%Macros
+	%__MACROS-HERE__%
+	%End Macros
+
+	\usetikzlibrary{calc, backgrounds,angles, quotes}
+	\pgfplotsset{compat=1.18}
+	\tikzset{
+	    partial ellipse/.style args={#1:#2:#3}{
+	        insert path={+ (#1:#3) arc (#1:#2:#3)}
+	    }
+	}
+
+
+	\fancyhf{}
+	\fancyfoot[l]{\copyright \,\,\myauthor}
+	\fancyhead[L]{\mysubtitle}
+	\fancyhead[r]{\mytitle}
+	\fancyfoot[c]{Page \thepage \hspace{1pt} of \ztotpages}
+	\pagestyle{fancy}
+
+	\fancypagestyle{plain}{
+	\fancyhf{}
+	\fancyfoot[l]{\copyright \,\,\myauthor}
+	\fancyfoot[c]{Page \thepage \hspace{1pt} of \ztotpages}
+	\renewcommand{\headrulewidth}{0pt}}
+	\setlength{\headheight}{15pt}
+
+
+	\theoremstyle{definition}
+
+	\newmdtheoremenv{theorem}{Theorem}
+	\newmdtheoremenv{lemma}[theorem]{Lemma}
+	\newmdtheoremenv{prop}[theorem]{Proposition}
+	\newmdtheoremenv{define}[theorem]{Definition}
+	\newmdtheoremenv{thm}[theorem]{Theorem}
+	\newmdtheoremenv{cor}[theorem]{Corollary}
+
+	\numberwithin{equation}{section}
+	\numberwithin{theorem}{section}
+	\numberwithin{figure}{section}
+
+	\newenvironment{ex}[0]{
+		\refstepcounter{theorem}
+		\par
+		\noindent
+	    \textbf{Example \thetheorem.}}
+	    {\hfill$\spadesuit$
+	    \par}
+
+	\newenvironment{rem}[0]{
+		\refstepcounter{theorem}
+		\par
+		\noindent
+	    \textbf{Remark \thetheorem.}}
+	    {\par}
+
+	\newenvironment{block}
+	{
+	    \begin{center}
+	    \begin{em}\small
+	    \begin{tabular}{p{0.9\linewidth}}
+	}
+	{
+	    \end{tabular}
+	    \end{em}
+	    \end{center}
+	}
+
+	\hypersetup{
+	    colorlinks=true,
+	    urlcolor=blue,
+	    linkcolor=magenta,
+	    pdfborderstyle={/S/U/W 1}
+	}
+
+	\setlength\extrarowheight{3pt}
+	\setlength{\parskip}{5pt}
+
+	\setlength{\tabcolsep}{5pt}
+	\onehalfspacing
+	%End Configuration
+
+	\title{\mytitle \\ [2ex] \Large \mysubtitle}
+	\date{\small Modified \mydate}
+	\author {\myauthor
+		\thanks{\href{https://tylerwang.org}{tylerwang.org}}}
+
+\begin{document}
+\maketitle
+\end{document}
