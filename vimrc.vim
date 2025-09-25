@@ -17,6 +17,10 @@ set linebreak
 set mousemoveevent
 set foldmethod=indent
 
+set breakindent
+set formatoptions=l
+set lbr
+
 set updatetime=50
 
 augroup numbertoggle
