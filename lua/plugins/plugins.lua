@@ -12,9 +12,7 @@ return {
 	{'ntpeters/vim-better-whitespace'},
 	{'tpope/vim-repeat'},
 	{'alvan/vim-closetag'},
-	{'cohama/agit.vim'},
 	{'sakhnik/nvim-gdb'},
-	--{'instant-markdown/vim-instant-markdown', {'for': 'markdown', 'do': 'yarn install'}},
 	{'Shirk/vim-gas'},
 	{'preservim/tagbar'},
 	{'miyakogi/conoline.vim',
@@ -36,5 +34,10 @@ return {
 
 		  vim.g.vimtex_view_skim_sync = 1
 		  vim.g.vimtex_view_general_options = '-e'
-		end}
+		end},
+	{"folke/todo-comments.nvim",
+		tag = 'stable',
+		dependencies = { "nvim-lua/plenary.nvim" },
+		opts = {{}}
+	}
 }

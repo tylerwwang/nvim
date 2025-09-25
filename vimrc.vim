@@ -2,6 +2,7 @@
 "ctags
 "node
 "ccls
+"ripgrep
 
 set termguicolors
 set t_Co=256
@@ -51,10 +52,11 @@ nmap <silent> F <Plug>(coc-fix-current)
 
 nmap <silent><CR> <cmd>Telescope find_files<CR>
 nmap <silent><S-CR> <cmd>Telescope buffers<CR>
-map <silent><F1> <cmd>Telescope neoclip<CR>
-map <silent><F2> <cmd>Telescope macroscope<CR>
-map <silent><F3> <cmd>Telescope commands<CR>
-map <silent><F4> <cmd>Telescope coc<CR>
+map <silent><F1> <cmd>TodoTelescope<CR>
+map <silent><F2> <cmd>Telescope commands<CR>
+map <silent><F3> <cmd>Telescope coc<CR>
+map <silent><F4> <cmd>Telescope neoclip<CR>
+map <silent><F5> <cmd>Telescope macroscope<CR>
 map <silent><F12> <cmd>lua require('telescope.builtin').keymaps()<CR>
 
 map <silent><F11> :SwapColor <CR>
@@ -107,6 +109,12 @@ noremap k gk
 nmap <silent> <leader>l :Agit<CR>
 
 nmap <silent> \ :TexGoto<CR>
+
+nmap <silent><leader>w :VimtexCountWords
+nmap <silent><leader>W :VimtexCountWords!
+
+vmap <silent><leader>w :VimtexCountWords
+vmap <silent><leader>W :VimtexCountWords!
 
 "Custom Commands
 command! CBuild call CBuild()
@@ -205,7 +213,6 @@ endfunction
 
 call SetScheme()
 
-
 "Delimate Settings
 au FileType html let b:delimitMate_autoclose = 0
 
@@ -298,6 +305,69 @@ function! TexCleanBuffer(closing_bufnr)
 	execute 'TexClean'
 endfunction
 
+augroup latex_autocomplete
+	autocmd!
+  	autocmd FileType tex inoremap <buffer> <expr> <CR> SmartBeginEnd()
+	autocmd FileType tex inoremap <buffer> <expr> $ SmartDollar()
+	autocmd FileType tex inoremap <buffer> <expr> <BS> SmartDollarBackspace()
+augroup END
+
+function! SmartBeginEnd() abort
+  let line   = getline('.')
+  let coln   = col('.')
+  " trim leading/trailing whitespace for the detection
+  let trimmed = substitute(line, '^\s\+\|\s\+$', '', 'g')
+
+  " only trigger when the trimmed line is exactly \begin{ENV}
+  if stridx(trimmed, '\begin{') == 0 && len(trimmed) >= 8 && trimmed[len(trimmed)-1] ==# '}'
+    " extract what's inside the braces (works with stars like align*)
+    let bracePos = stridx(trimmed, '{')
+    let env = trimmed[bracePos+1 : len(trimmed)-2]
+
+    " find the position of the (closing) } in the original line (0-based)
+    let closeIdx = strridx(line, '}')
+    if closeIdx >= 0
+      " If cursor is on or before the closing }, move right the needed amount
+      if coln - 1 <= closeIdx
+        " number of <Right> presses to move cursor to after the closing '}'
+        let n = closeIdx - (coln - 1) + 1
+        let rights = repeat("\<Right>", n)
+        " move after '}', make inner line with a Tab, then insert \end{env}, go up
+        return rights . "\<CR>\<Tab>\<CR>\\end{" . env . "}\<Up>"
+      " If cursor is already after the closing '}', just do the expansion
+      elseif coln - 1 > closeIdx
+        return "\<CR>\<Tab>\<CR>\\end{" . env . "}\<Up>"
+      endif
+    endif
+  endif
+
+  " fallback: normal Enter
+  return "\<CR>"
+endfunction
+
+function! SmartDollar() abort
+	" char before cursor
+	let prevchar = getline('.')[col('.') - 2]
+	" If it's an escape \, just insert $
+	if prevchar ==# '\'
+	  return '$'
+	endif
+	" Otherwise expand
+	return '$$' . "\<Left>"
+endfunction
+
+function! SmartDollarBackspace() abort
+	" Get current line and cursor column
+	let l = getline('.')
+	let c = col('.')
+	" If cursor is just after an opening $ and next char is a closing $
+	if c > 1 && l[c-2] ==# '$' && c <= len(l) && l[c-1] ==# '$'
+	  " delete both
+	  return "\<Del>\<BS>"
+	endif
+	" otherwise normal backspace
+	return "\<BS>"
+endfunction
 
 "Markdown Live Preview
 let g:instant_markdown_autostart = 0
