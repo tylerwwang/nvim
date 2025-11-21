@@ -10,6 +10,9 @@
 		}
 	},
 
+	"coc.source.buffer.enable": false,
+	"coc.source.around.enable": false,
+
 	"git.removedSign.text": "—",
 	"git.untrackedDecorator": "",
 	"git.changedDecorator": "",
@@ -38,11 +41,14 @@
 	},
 	"ltex.latex.commands": {
 		"\\newmdtheoremenv{}{}": "ignore",
+		"\\newmdtheoremenv{}[]{}": "ignore",
+		"\\newtheorem{}[]{}": "ignore",
 		"\\renewcommand{}{}": "ignore",
 		"\\newcommand{}[]{}": "ignore",
 		"\\newcommand{}{}": "ignore",
 		"\\newenvironment{}{}": "ignore",
 		"\\newenvironment{}[]{}": "ignore",
+		"\\newenvironment{}[][]{}": "ignore",
 		"\\def{}": "ignore",
 		"\\begin{}": "ignore",
 		"\\end{}": "ignore",
@@ -58,6 +64,7 @@
 		"\\numberwithin{}{}": "ignore",
 		"\\pgfplotsset{}": "ignore",
 	},
+	"ltex.checkFrequency": "save",
 
 	"coc.preferences.disablePromptBuffers": true,
 

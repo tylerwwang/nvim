@@ -114,11 +114,11 @@ nmap <silent> <leader>l :Agit<CR>
 
 nmap <silent> \ :TexGoto<CR>
 
-nmap <silent><leader>w :VimtexCountWords
-nmap <silent><leader>W :VimtexCountWords!
+nmap <silent><leader>w :VimtexCountWords<CR>
+nmap <silent><leader>W :VimtexCountWords!<CR>
 
-vmap <silent><leader>w :VimtexCountWords
-vmap <silent><leader>W :VimtexCountWords!
+vmap <silent><leader>w :VimtexCountWords<CR>
+vmap <silent><leader>W :VimtexCountWords!<CR>
 
 "Custom Commands
 command! CBuild call CBuild()
@@ -160,6 +160,9 @@ function! SetColor()
 		hi MatchParen cterm=underline ctermfg=220 ctermbg=none gui=underline,bold guibg=none guifg=#5ec718
 
 		hi! ExtraWhitespace ctermbg=223 guibg=#ffd7af
+		hi statusline cterm=NONE gui=NONE
+		hi tabline cterm=NONE gui=NONE
+		hi winbar cterm=NONE gui=NONE
 	else
 		hi! Visual ctermbg=242 guibg=#6c6c6c
 		hi! VisualNOS ctermbg=242 guibg=#6c6c6c
@@ -221,7 +224,6 @@ call SetScheme()
 au FileType html let b:delimitMate_autoclose = 0
 
 "Better Whitespace
-let g:strip_whitespace_on_save = 1
 let g:strip_max_file_size = 2000
 
 "Airline Settings
@@ -234,7 +236,6 @@ let g:airline_section_y = ''
 let g:airline#extensions#tagbar#enabled = 1
 let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#coc#enabled = 1
-let g:airline#extensions#nvimlsp#enabled = 1
 let g:airline_powerline_fonts =   1
 let g:airline#extensions#whitespace#enabled = 0
 let g:airline_filetype_overrides = {
@@ -252,6 +253,8 @@ let g:airline_filetype_overrides = {
 	\ 'vimshell': ['vimshell','%{vimshell#get_status_string()}'],
 	\ 'vaffle' : [ 'Vaffle', '%{b:vaffle.dir}' ],
 \ }
+
+let g:airline#extensions#vimtex#enabled = 1
 
 function! s:update_git_status()
   let g:airline_section_b = "%{get(g:,'coc_git_status','')}"
@@ -311,70 +314,83 @@ endfunction
 
 augroup latex_autocomplete
 	autocmd!
-  	autocmd FileType tex inoremap <buffer> <expr> <CR> SmartBeginEnd()
-	autocmd FileType tex inoremap <buffer> <expr> $ SmartDollar()
-	autocmd FileType tex inoremap <buffer> <expr> <BS> SmartDollarBackspace()
+  	"autocmd FileType tex inoremap <buffer> <expr> <CR> SmartBeginEnd()
 augroup END
 
 function! SmartBeginEnd() abort
-  let line   = getline('.')
-  let coln   = col('.')
-  " trim leading/trailing whitespace for the detection
-  let trimmed = substitute(line, '^\s\+\|\s\+$', '', 'g')
+	let line   = getline('.')
+	let coln   = col('.')
+	" trim leading/trailing whitespace for the detection
+	let trimmed = substitute(line, '^\s\+\|\s\+$', '', 'g')
 
-  " only trigger when the trimmed line is exactly \begin{ENV}
-  if stridx(trimmed, '\begin{') == 0 && len(trimmed) >= 8 && trimmed[len(trimmed)-1] ==# '}'
-    " extract what's inside the braces (works with stars like align*)
-    let bracePos = stridx(trimmed, '{')
-    let env = trimmed[bracePos+1 : len(trimmed)-2]
+	" only trigger when the trimmed line is exactly \begin{ENV}
+	if stridx(trimmed, '\begin{') == 0 && len(trimmed) >= 8 && trimmed[len(trimmed)-1] ==# '}'
+	  " extract what's inside the braces (works with stars like align*)
+	  let bracePos = stridx(trimmed, '{')
+	  let env = trimmed[bracePos+1 : len(trimmed)-2]
 
-    " find the position of the (closing) } in the original line (0-based)
-    let closeIdx = strridx(line, '}')
-    if closeIdx >= 0
-      " If cursor is on or before the closing }, move right the needed amount
-      if coln - 1 <= closeIdx
-        " number of <Right> presses to move cursor to after the closing '}'
-        let n = closeIdx - (coln - 1) + 1
-        let rights = repeat("\<Right>", n)
-        " move after '}', make inner line with a Tab, then insert \end{env}, go up
-        return rights . "\<CR>\<Tab>\<CR>\\end{" . env . "}\<Up>"
-      " If cursor is already after the closing '}', just do the expansion
-      elseif coln - 1 > closeIdx
-        return "\<CR>\<Tab>\<CR>\\end{" . env . "}\<Up>"
-      endif
-    endif
-  endif
+	  " find the position of the (closing) } in the original line (0-based)
+	  let closeIdx = strridx(line, '}')
+	  if closeIdx >= 0
+	    " If cursor is on or before the closing }, move right the needed amount
+	    if coln - 1 <= closeIdx
+	      " number of <Right> presses to move cursor to after the closing '}'
+	      let n = closeIdx - (coln - 1) + 1
+	      let rights = repeat("\<Right>", n)
+	      " move after '}', make inner line with a Tab, then insert \end{env}, go up
+	      return rights . "\<CR>\<CR>\\end{" . env . "}\<Up>"
+	    " If cursor is already after the closing '}', just do the expansion
+	    elseif coln - 1 > closeIdx
+	      return "\<CR>\<CR>\\end{" . env . "}\<Up>"
+	    endif
+	  endif
+	endif
 
-  " fallback: normal Enter
-  return "\<CR>"
+	" fallback: normal Enter
+	return "\<CR>"
 endfunction
 
 function! SmartDollar() abort
-	" char before cursor
-	let prevchar = getline('.')[col('.') - 2]
-	" If it's an escape \, just insert $
-	if prevchar ==# '\'
-	  return '$'
-	endif
-	" Otherwise expand
-	return '$$' . "\<Left>"
+    let l = getline('.')
+    let c = col('.')
+
+    " char before cursor
+    let prevchar = getline('.')[c - 2]
+
+    " If it's an escape \, just insert $
+    if prevchar ==# '\'
+        return '$'
+    endif
+
+    " If at a $ or $$, skip over them
+    if c <= len(l) && l[c-1] ==# '$'
+        " If double $$ ahead, skip both
+        if c < len(l) && l[c] ==# '$'
+            return "\<Right>\<Right>"
+        endif
+        " Otherwise skip single $
+        return "\<Right>"
+    endif
+
+    " Otherwise expand to $$
+    return '$$' . "\<Left>"
 endfunction
 
 function! SmartDollarBackspace() abort
-	" Get current line and cursor column
-	let l = getline('.')
-	let c = col('.')
-	" If cursor is just after an opening $ and next char is a closing $
-	if c > 1 && l[c-2] ==# '$' && c <= len(l) && l[c-1] ==# '$'
-	  " delete both
-	  return "\<Del>\<BS>"
-	endif
-	" otherwise normal backspace
-	return "\<BS>"
+    let l = getline('.')
+    let c = col('.')
+
+    " If cursor is just after an opening $ and next char is a closing $
+    if c > 1 && l[c-2] ==# '$' && c <= len(l) && l[c-1] ==# '$'
+        " delete both
+        return "\<Del>\<BS>"
+    endif
+
+    " otherwise normal backspace
+    return "\<BS>"
 endfunction
 
-"Markdown Live Preview
-let g:instant_markdown_autostart = 0
+"Markdown Settings
 
 "LLDB Configuration
 let g:nvimgdb_use_find_executables = 0
